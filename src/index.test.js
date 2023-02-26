@@ -1,7 +1,23 @@
 import OnLeaveIntent from './index'
 
 describe('OnLeaveIntent', () => {
-  it('should return 5', () => {
-    expect(5).toBe(5)
+  it('should run the callback function if the user goes out of the screen', () => {
+    const callback = jest.fn()
+
+    const onLeaveIntent = new OnLeaveIntent(callback)
+
+    // simulate the user leaving the page
+    document.dispatchEvent(new MouseEvent('mouseout', { relatedTarget: null }))
+    expect(callback).toHaveBeenCalled()
+  })
+
+  it('should not run the callback function if the user stills on the screen', () => {
+    const callback = jest.fn()
+
+    const onLeaveIntent = new OnLeaveIntent(callback)
+
+    // simulate the user leaving the page
+    document.dispatchEvent(new MouseEvent('mouseout', { relatedTarget: new EventTarget() }))
+    expect(callback).not.toHaveBeenCalled()
   })
 })
