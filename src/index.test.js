@@ -1,11 +1,9 @@
-import OnLeaveIntent from './index'
+import OnLeaveIntent from '.'
 
 describe('OnLeaveIntent', () => {
   let callback
-  // eslint-disable-next-line no-unused-vars
   let onLeaveIntent
-
-  const delay = 1000 // 1000ms === 1s
+  const delay = 1000
   jest.useFakeTimers()
 
   beforeEach(() => {
@@ -13,24 +11,32 @@ describe('OnLeaveIntent', () => {
     onLeaveIntent = new OnLeaveIntent(callback, delay)
   })
 
-  it('should run the callback function if the user goes out of the screen', () => {
-    // advance 1s
+  it('should run the callback function if user goes out of the screen', () => {
     jest.advanceTimersByTime(delay)
-    // simulate the user leaving the page
     document.dispatchEvent(new MouseEvent('mouseout', { relatedTarget: null }))
+
     expect(callback).toHaveBeenCalled()
   })
 
-  it('should not run the callback function if the user stills on the screen', () => {
-    jest.advanceTimersByTime(delay)
-    document.dispatchEvent(new MouseEvent('mouseout', { relatedTarget: new EventTarget() }))
+  it('should not run the callback function if user moves inside the page', () => {
+    document.dispatchEvent(
+      new MouseEvent('mouseout', { relatedTarget: new EventTarget() })
+    )
+
     expect(callback).not.toHaveBeenCalled()
   })
 
-  it('should not run the callback function before the delay', () => {
-    // advance only .5s
-    jest.advanceTimersByTime(delay / 2)
-    document.dispatchEvent(new MouseEvent('mouseout', { relatedTarget: null }))
+  it('should not run the callback before the delay passed', () => {
+    document.dispatchEvent(new MouseEvent('mouseout'))
+
+    expect(callback).not.toHaveBeenCalled()
+  })
+
+  it('should remove the listener when destroyed ', () => {
+    onLeaveIntent.destroy()
+    jest.advanceTimersByTime(delay)
+    document.dispatchEvent(new MouseEvent('mouseout'))
+
     expect(callback).not.toHaveBeenCalled()
   })
 

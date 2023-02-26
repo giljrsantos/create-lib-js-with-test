@@ -5,7 +5,6 @@
  * @param callback - a function to run when the user is leaving the page
  * @param delay - time in milliseconds defined to start tracking the user
  */
-
 export default class OnLeaveIntent {
   constructor(callback, delay) {
     this.callback = callback
@@ -17,6 +16,7 @@ export default class OnLeaveIntent {
   init = () => {
     this.timer = window.setTimeout(this.handleMouseOut, this.delay)
   }
+
   destroy = () => {
     clearTimeout(this.timer)
     document.removeEventListener('mouseout', this.checkOutOfBounds)
